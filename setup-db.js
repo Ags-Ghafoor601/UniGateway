@@ -12,9 +12,13 @@ async function setupDatabase() {
 
         console.log("Connected to MySQL server.");
 
-        // Create Database
-        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'unigateway_db'}\`;`);
-        console.log("Database created or already exists.");
+        // Create Database (May fail on cloud providers like Aiven, which is fine as they pre-create it)
+        try {
+            await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'unigateway_db'}\`;`);
+            console.log("Database created or already exists.");
+        } catch (dbError) {
+            console.log("Skipping database creation (Cloud Database Mode). Using existing database.");
+        }
 
         // Use the database
         await connection.query(`USE \`${process.env.DB_NAME || 'unigateway_db'}\`;`);

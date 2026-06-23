@@ -9,7 +9,7 @@ const Groq = require('groq-sdk');
 
 const app = express();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp/' });
 
 // Middleware
 app.use(cors()); // Allow requests from your frontend
@@ -118,8 +118,11 @@ app.post('/api/ai/quiz', async (req, res) => {
     }
 });
 
-// Start the server
+// Export the app for Vercel Serverless, but also run locally if started directly
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    });
+}
+module.exports = app;
