@@ -13,7 +13,9 @@
     { "src": "firebase.js", "use": "@vercel/static" },
     { "src": "insights.js", "use": "@vercel/static" },
     { "src": "quiz.js", "use": "@vercel/static" },
-    { "src": "voice.js", "use": "@vercel/static" }
+    { "src": "voice.js", "use": "@vercel/static" },
+    { "src": "favicon.png", "use": "@vercel/static" },
+    { "src": "logos/**/*", "use": "@vercel/static" }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/server.js" }
