@@ -1,6 +1,6 @@
-// ===========================
+// ==========================
 // EXAM SCHEDULER STATE
-// ===========================
+// ==========================
         // ===== EXAM SCHEDULER STATE =====
         let examScheduleData = null;
         let currentStudyStyle = 'balanced';
