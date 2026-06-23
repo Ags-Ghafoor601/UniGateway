@@ -72,7 +72,7 @@
                 const response = await callGroqAPI(`You are an expert academic advisor. Based on the PDF syllabus provided, extract and organize all study topics.
     ${uploadedPDFText}
     Generate a structured topic list. Return ONLY valid JSON:
-    {"subject":"Subject Name","topics":["Topic 1","Topic 2","Topic 3","Topic 4","Topic 5","Topic 6","Topic 7","Topic 8"],"estimatedHours":40}`, 300);
+    {"subject":"Subject Name","topics":["Topic 1","Topic 2","Topic 3","Topic 4","Topic 5","Topic 6","Topic 7","Topic 8"],"estimatedHours":40}`, 3000);
                 const parsed = JSON.parse(cleanJSON(response));
                 document.getElementById('examSubject').value = parsed.subject || '';
                 document.getElementById('examTopics').value = parsed.topics.map((t, i) => `Chapter ${i + 1}: ${t}`).join('\n');
