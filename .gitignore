@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment Variables (CRITICAL SECURITY)
+.env
+.env.*
+!.env.example
+
+# Temporary uploads folder
+uploads/
+
+# Deployment & IDE
+.vercel/
+.vscode/
+.DS_Store
