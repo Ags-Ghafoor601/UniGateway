@@ -69,8 +69,8 @@ To get a local copy up and running, follow these simple steps.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YourUsername/unigateway.git
-   cd unigateway
+   git clone https://github.com/Ags-Ghafoor601/UniGateway.git
+   cd UniGateway
    ```
 
 2. **Install NPM packages**
