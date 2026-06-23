@@ -4,9 +4,16 @@
     { "src": "server.js", "use": "@vercel/node" },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
+    { "src": "universities.csv", "use": "@vercel/static" },
+    { "src": "agent.js", "use": "@vercel/static" },
     { "src": "app.js", "use": "@vercel/static" },
+    { "src": "channels.js", "use": "@vercel/static" },
+    { "src": "dashboard.js", "use": "@vercel/static" },
+    { "src": "exam.js", "use": "@vercel/static" },
     { "src": "firebase.js", "use": "@vercel/static" },
-    { "src": "universities.csv", "use": "@vercel/static" }
+    { "src": "insights.js", "use": "@vercel/static" },
+    { "src": "quiz.js", "use": "@vercel/static" },
+    { "src": "voice.js", "use": "@vercel/static" }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/server.js" }
