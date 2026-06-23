@@ -83,21 +83,26 @@ app.post('/api/ai/transcribe', upload.single('file'), async (req, res) => {
         }
         const { model, language } = req.body;
         
+        // Append original extension so Groq SDK accepts the file format
+        const ext = path.extname(req.file.originalname) || '.webm';
+        const newPath = req.file.path + ext;
+        fs.renameSync(req.file.path, newPath);
+        
         const transcription = await groq.audio.transcriptions.create({
-            file: fs.createReadStream(req.file.path),
+            file: fs.createReadStream(newPath),
             model: model || "whisper-large-v3-turbo",
             language: language
         });
         
         // Clean up temporary file
-        fs.unlinkSync(req.file.path);
+        fs.unlinkSync(newPath);
         
         res.json(transcription);
     } catch (error) {
         console.error("Groq Transcription Error:", error);
-        if (req.file && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
-        }
+        // Ensure cleanup of the original and renamed files
+        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        if (req.file && fs.existsSync(req.file.path + (path.extname(req.file.originalname) || '.webm'))) fs.unlinkSync(req.file.path + (path.extname(req.file.originalname) || '.webm'));
         res.status(500).json({ error: "Failed to transcribe audio" });
     }
 });
@@ -110,8 +115,7 @@ app.post('/api/ai/quiz', async (req, res) => {
             messages: [{ role: "user", content: prompt }],
             model: "llama-3.1-8b-instant",
             temperature: 0.3, // Lower temperature for more consistent JSON
-            max_tokens: max_tokens || 2500,
-            response_format: { type: "json_object" } // Tell Groq to return JSON
+            max_tokens: max_tokens || 2500
         });
         res.json({ content: response.choices[0]?.message?.content });
     } catch (error) {

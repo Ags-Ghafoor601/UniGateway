@@ -35,10 +35,32 @@
         async function handlePDFUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            document.getElementById('pdfFileName').textContent = `📄 ${file.name}`;
+            document.getElementById('pdfFileName').textContent = `📄 ${file.name} (Extracting text...)`;
             document.getElementById('pdfFileName').classList.remove('hidden');
+            
+            try {
+                const ext = file.name.split('.').pop().toLowerCase();
+                let text = '';
+                if (ext === 'pdf') {
+                    if (typeof extractTextFromPDF !== 'undefined') text = await extractTextFromPDF(file);
+                } else if (typeof readTextFile !== 'undefined') {
+                    text = await readTextFile(file);
+                }
+                
+                if (text && text.trim().length > 30) {
+                    uploadedPDFText = `DOCUMENT CONTENT:\n${text.substring(0, 3000)}`;
+                    document.getElementById('pdfFileName').textContent = `📄 ${file.name} (Ready)`;
+                } else {
+                    uploadedPDFText = `PDF File: ${file.name}\nGenerate topics based on filename.`;
+                    document.getElementById('pdfFileName').textContent = `📄 ${file.name} (Text extraction failed, using filename)`;
+                }
+            } catch (e) {
+                console.error("PDF Extraction Error in Exam Planner:", e);
+                uploadedPDFText = `PDF File: ${file.name}\nGenerate topics based on filename.`;
+                document.getElementById('pdfFileName').textContent = `📄 ${file.name} (Using filename)`;
+            }
+            
             document.getElementById('extractPdfBtn').classList.remove('hidden');
-            uploadedPDFText = `PDF File: ${file.name}\nSize: ${Math.round(file.size / 1024)}KB\nPlease extract topics from this syllabus PDF named "${file.name}". Generate a comprehensive topic list based on the filename and common curriculum knowledge.`;
         }
 
         async function extractFromPDF() {
