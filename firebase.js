@@ -2,7 +2,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"; import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyCB13klyU4YBhs3yo1nOgdvyj0Dl9KVYvk",
+            apiKey: "AIzaSyCB13k1yU4YBHs3yo1nOgdvYj0D19KVYvk",
             authDomain: "unigateway-2356.firebaseapp.com",
             projectId: "unigateway-2356",
             storageBucket: "unigateway-2356.firebasestorage.app",
