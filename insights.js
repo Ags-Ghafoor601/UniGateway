@@ -136,7 +136,7 @@ function renderInsights() {
     <!-- Top Decorative Header inside the view -->
     <div class="mb-8 mt-2 text-center animate-fade-in">
         <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);">
-            <i class="fa-solid fa-radar text-zinc-400 text-xl"></i>
+            <i class="fa-solid fa-microscope text-zinc-400 text-xl"></i>
         </div>
         <h2 class="text-3xl font-black text-white tracking-tight mb-2">Diagnostic Scan</h2>
         <p class="text-xs font-medium text-zinc-500 max-w-xs mx-auto">AI-powered analysis of your recent academic performance</p>
