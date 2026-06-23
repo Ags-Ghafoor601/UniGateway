@@ -102,8 +102,10 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
             btn.disabled = true;
             try {
+                const todayStr = new Date().toISOString().split('T')[0];
                 const stylePrompt = { 'balanced': 'Mix study, revision and practice equally. Include breaks.', 'intensive': 'Heavy study sessions, more practice tests, minimal breaks.', 'relaxed': 'Shorter sessions, more revision time, longer breaks for wellbeing.' }[currentStudyStyle];
                 const prompt = `You are an expert academic scheduler. Create a detailed ${daysLeft}-day study schedule.
+    Today's Date (Day 1 MUST start on this exact date): ${todayStr}
     Subject: ${subject}
     Exam Date: ${examDate}
     Days Available: ${daysLeft}
@@ -228,8 +230,14 @@
             const selectedTopics = practiceTopics.slice(0, 5).join(', ');
             try {
                 const response = await callGroqAPI(`Generate exactly 5 MCQs for exam practice on: ${examScheduleData.subject || 'the subject'}. Topics: ${selectedTopics}
+    
+    IMPORTANT RULES:
+    - Each question must have EXACTLY 4 options with FULL descriptive answer text (NOT just letters like A, B, C, D).
+    - The "a" field must be the EXACT text of one of the options in "o".
+    - Each option must be a complete, meaningful answer — never a single letter or number.
+
     Return ONLY a valid JSON array:
-    [{"q":"Question","o":["A","B","C","D"],"a":"Correct option","e":"Explanation","topic":"Topic name"}]`, 2000);
+    [{"q":"Question text","o":["First option","Second option","Third option","Fourth option"],"a":"First option","e":"Explanation","topic":"Topic name"}]`, 2000);
                 currentPracticeQuestions = JSON.parse(cleanJSON(response));
                 renderPracticeQuiz(currentPracticeQuestions);
             } catch (err) {
