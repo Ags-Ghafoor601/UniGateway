@@ -224,33 +224,57 @@ function loadUserCalculatorData() { const savedData = localStorage.getItem(`uniG
 // FEEDBACK
 // ===========================
 async function sendFeedback() {
+    const subject = document.getElementById('fbSubject').value;
+    const message = document.getElementById('fbMessage').value.trim();
+
+    if (!message) {
+        alert("Please enter a message before sending.");
+        return;
+    }
+
+    if (message.length > 2000) {
+        alert("Message is too long. Please keep it under 2000 characters.");
+        return;
+    }
+
+    const lastFeedbackTime = localStorage.getItem('lastFeedbackTime');
+    if (lastFeedbackTime) {
+        const elapsed = Date.now() - parseInt(lastFeedbackTime);
+        if (elapsed < 5 * 60 * 1000) { // 5 minutes cooldown
+            alert("Please wait 5 minutes before submitting more feedback to prevent spam.");
+            return;
+        }
+    }
+
     const btn = document.querySelector('button[onclick="sendFeedback()"]');
     const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    // Pointing to your new Node.js server endpoint
-    const API_URL = "/api/feedback";
-
     try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                subject: document.getElementById('fbSubject').value,
-                message: document.getElementById('fbMessage').value
-            })
+        if (!window._db || !window._fsAddDoc) {
+            throw new Error("Database connection not ready. Please wait a moment and try again.");
+        }
+
+        await window._fsAddDoc(window._fsCollection(window._db, "feedback"), {
+            subject: subject,
+            message: message,
+            createdAt: window._fsServerTimestamp(),
+            userId: window.currentUserId || 'guest',
+            source: 'web'
         });
 
-        if (!response.ok) throw new Error("Server rejected request");
+        localStorage.setItem('lastFeedbackTime', Date.now().toString());
 
         alert("Feedback Sent Successfully!");
         document.getElementById('fbMessage').value = "";
     } catch (e) {
         console.error("Feedback Error:", e);
-        alert("Error sending feedback. Check the console for details.");
+        alert(e.message || "Error sending feedback. Please try again.");
     } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
         btn.innerHTML = original;
     }
 }

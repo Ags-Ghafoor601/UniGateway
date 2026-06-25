@@ -1,65 +1,38 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2/promise');
+
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Groq = require('groq-sdk');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const upload = multer({ dest: '/tmp/' });
+const upload = multer({
+    dest: '/tmp/',
+    limits: { fileSize: 4 * 1024 * 1024 } // 4MB limit for audio uploads
+});
 
 // Middleware
 app.use(cors()); // Allow requests from your frontend
 app.use(express.json()); // Parse incoming JSON payloads
 app.use(express.static(__dirname)); // Serve static frontend files
 
-// Create a MySQL Connection Pool
-const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'unigateway_db',
-    port: process.env.DB_PORT || 3306,
-    ssl: { rejectUnauthorized: false },
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+
+
+// Rate Limiter for AI endpoints (max 50 requests per hour)
+const aiLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 50,
+    message: { error: "Too many AI requests from this IP, please try again after an hour." },
 });
 
-// Verify the connection on startup
-pool.getConnection()
-    .then(connection => {
-        console.log("✅ Successfully connected to MySQL database!");
-        connection.release();
-    })
-    .catch(err => {
-        console.error("❌ MySQL Connection Error:", err.message);
-    });
 
-// API Route to receive feedback
-app.post('/api/feedback', async (req, res) => {
-    const { subject, message } = req.body;
-    if (!subject || !message) {
-        return res.status(400).json({ success: false, error: "Subject and message are required." });
-    }
-    try {
-        const [result] = await pool.execute(
-            'INSERT INTO feedback (subject, message) VALUES (?, ?)',
-            [subject, message]
-        );
-        console.log(`Feedback received. Insert ID: ${result.insertId}`);
-        res.status(200).json({ success: true, message: "Feedback saved successfully!" });
-    } catch (error) {
-        console.error("Database Error:", error);
-        res.status(500).json({ success: false, error: "Failed to save feedback to database." });
-    }
-});
 
 // API Route for AI Chat (ARIA & Voice Coach)
-app.post('/api/ai/chat', async (req, res) => {
+app.post('/api/ai/chat', aiLimiter, async (req, res) => {
     try {
         const { messages, model, temperature, max_tokens } = req.body;
         const response = await groq.chat.completions.create({
@@ -76,27 +49,27 @@ app.post('/api/ai/chat', async (req, res) => {
 });
 
 // API Route for AI Transcription (Voice Coach)
-app.post('/api/ai/transcribe', upload.single('file'), async (req, res) => {
+app.post('/api/ai/transcribe', aiLimiter, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: "No audio file provided" });
         }
         const { model, language } = req.body;
-        
+
         // Append original extension so Groq SDK accepts the file format
         const ext = path.extname(req.file.originalname) || '.webm';
         const newPath = req.file.path + ext;
         fs.renameSync(req.file.path, newPath);
-        
+
         const transcription = await groq.audio.transcriptions.create({
             file: fs.createReadStream(newPath),
             model: model || "whisper-large-v3-turbo",
             language: language
         });
-        
+
         // Clean up temporary file
         fs.unlinkSync(newPath);
-        
+
         res.json(transcription);
     } catch (error) {
         console.error("Groq Transcription Error:", error);
@@ -108,7 +81,7 @@ app.post('/api/ai/transcribe', upload.single('file'), async (req, res) => {
 });
 
 // API Route for AI Quiz Generation
-app.post('/api/ai/quiz', async (req, res) => {
+app.post('/api/ai/quiz', aiLimiter, async (req, res) => {
     try {
         const { prompt, max_tokens } = req.body;
         const response = await groq.chat.completions.create({

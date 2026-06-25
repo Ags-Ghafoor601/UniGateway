@@ -5,11 +5,11 @@
 
   <p align="center">
     <img src="https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge&logo=github" alt="Status" />
+    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
     <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
     <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
   </p>
 
   <p align="center">
@@ -31,29 +31,26 @@ Wrapped in a stunning, highly-responsive **Glassmorphism UI**, the application f
 *   **📊 Merit Calculator**: A highly accurate aggregate calculator for universities across Pakistan (NUST, FAST, UET, MDCAT). Features a beautiful circular progress visualization.
 *   **📈 Diagnostic Scanner & Insights**: AI analyzes the student's recent test scores and instantly generates targeted study guides for their weakest subjects.
 *   **🏫 University Navigator**: A fast, client-side searchable database of universities with advanced filtering by city and institution type.
-*   **🔒 Secure Authentication**: Robust user management powered by Google Firebase Auth.
+*   **🔒 Secure Authentication & 24/7 Feedback**: Robust user management and 24/7 serverless feedback storage powered by **Google Firebase Firestore**.
 
 ---
 
 ## 🏗️ Architecture & Tech Stack
 
-UniGateway utilizes a hybrid architecture for maximum performance and security:
+UniGateway utilizes a highly-optimized, serverless architecture designed specifically for **Vercel**:
 
 ### Frontend
 *   **HTML5 / CSS3 / Vanilla JavaScript**: Lightweight, ultra-fast client rendering.
 *   **Tailwind CSS**: Utility-first styling for a beautiful, modern, dark-themed UI.
-*   **Animations**: Custom CSS keyframes (`float`, `slide-up`, `pop`) for a premium user experience.
+*   **Firebase SDK**: Client-side authentication and zero-downtime, serverless feedback submission.
 
-### Backend
-*   **Node.js & Express.js**: Handles API routing, static file serving, and secure proxying.
-*   **Multer**: Manages temporary audio file uploads for the voice-to-text pipeline.
-
-### Databases
-*   **Firebase Authentication**: Handles secure user registration, login, and profile management.
-*   **MySQL**: Relational database used to capture and store student feedback securely.
+### Serverless Backend
+*   **Vercel Serverless Functions (`server.js`)**: Acts as a high-speed, stateless proxy for secure AI operations.
+*   **Multer**: Manages temporary audio file uploads for the voice-to-text pipeline, strictly capped at 4MB to prevent payload crashes.
+*   **Express Rate Limiting**: Intelligent cooldowns on all AI endpoints to prevent spam and API credit drainage.
 
 ### AI Integration
-*   **Groq Cloud SDK**: The backend acts as a secure proxy to Groq's lightning-fast inference engine, ensuring that `GROQ_API_KEY` is never exposed to the client.
+*   **Groq Cloud SDK**: The backend acts as a secure proxy to Groq's lightning-fast inference engine, ensuring that your `GROQ_API_KEY` is never exposed to the client.
 
 ---
 
@@ -63,7 +60,6 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 *   [Node.js](https://nodejs.org/) (v16 or higher)
-*   [MySQL Server](https://dev.mysql.com/downloads/installer/)
 
 ### Installation
 
@@ -83,19 +79,9 @@ To get a local copy up and running, follow these simple steps.
    ```env
    PORT=3000
    GROQ_API_KEY=your_groq_api_key_here
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_mysql_password
-   DB_NAME=unigateway_db
    ```
 
-4. **Initialize the Database**
-   Run the included setup script to automatically create the MySQL database and tables:
-   ```bash
-   node setup-db.js
-   ```
-
-5. **Start the Application**
+4. **Start the Application**
    ```bash
    npm start
    ```
@@ -105,23 +91,20 @@ To get a local copy up and running, follow these simple steps.
 
 ## 🚀 Deployment Guide
 
-UniGateway is fully configured for modern cloud deployment. 
+UniGateway is fully optimized for a 1-click deployment to **Vercel**. 
 
-1. **Database Hosting (Aiven.io)**: Create a free MySQL instance on Aiven. Retrieve the Host, User, and Password, and update your `.env` variables in your hosting provider.
-2. **Web Hosting (Render.com)**: 
-   * Connect your GitHub repository to a new Render "Web Service".
-   * Build Command: `npm install`
-   * Start Command: `npm start`
-   * Add your `.env` variables in the Render dashboard.
-
-*(The `package.json` and `server.js` dynamic port binding are already optimized for Render).*
+1. **Push to GitHub**: Commit your changes and push them to your repository.
+2. **Connect to Vercel**: Import your repository into the Vercel dashboard.
+3. **Environment Variables**: Add your `GROQ_API_KEY` securely in the Vercel project settings.
+4. **Deploy**: Vercel will automatically read your `vercel.json` file, build the `server.js` function, and host your static frontend at the edge!
 
 ---
 
-## 🛡️ Security Measures
+## 🛡️ Robust Security Measures
 *   **Hidden API Keys**: All AI requests are routed through `/api/ai/*` backend endpoints. No keys exist in the frontend JavaScript.
+*   **Anti-Spam Feedback**: Client-side `localStorage` limits combined with serverless Firestore writing ensures the database cannot be brought down by traffic spikes.
+*   **Rate Limits**: All AI endpoints are capped to 50 requests per hour per IP.
 *   **Garbage Collection**: The `voice.js` upload route uses `fs.unlinkSync` to immediately destroy temporary audio chunks after transcription, preventing server bloat.
-*   **Git Ignore Strategy**: `.env`, `node_modules/`, and `uploads/` are strictly ignored from source control.
 
 ---
 
