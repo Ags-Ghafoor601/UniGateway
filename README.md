@@ -21,12 +21,12 @@
 
 ## 🌟 About The Project
 
-**UniGateway** is a premium, full-stack student portal designed to bridge the gap between high school and university. By leveraging cutting-edge Artificial Intelligence (Groq API, Llama-3, Whisper), UniGateway transforms how students prepare for entry tests, track their performance, and select their future universities.
+**UniGateway** is a premium, full-stack student portal designed to bridge the gap between high school and university. By leveraging cutting-edge Artificial Intelligence (Groq API, GPT OSS, Whisper), UniGateway transforms how students prepare for entry tests, track their performance, and select their future universities.
 
 Wrapped in a stunning, highly-responsive **Glassmorphism UI**, the application feels like a native mobile app while running completely in the browser.
 
 ### 🔥 Key Features
-*   **🤖 AI Quiz Banker**: Instantly generate dynamic MCQs based on custom topics or uploaded documents (PDF, Word, TXT). Powered by `llama-3.1-8b-instant`.
+*   **🤖 AI Quiz Banker**: Instantly generate dynamic MCQs based on custom topics or uploaded documents (PDF, Word, TXT). Powered by `gpt-oss-20b`.
 *   **🎙️ ARIA Voice Coach**: A conversational AI tutor. Students can speak directly to ARIA using their microphone, and the app transcribes their voice via the `whisper-large-v3-turbo` model for immediate, intelligent feedback.
 *   **📊 Merit Calculator**: A highly accurate aggregate calculator for universities across Pakistan (NUST, FAST, UET, MDCAT). Features a beautiful circular progress visualization.
 *   **📈 Diagnostic Scanner & Insights**: AI analyzes the student's recent test scores and instantly generates targeted study guides for their weakest subjects.

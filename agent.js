@@ -124,7 +124,7 @@
                             { role: "system", content: ARIA_SYSTEM_PROMPT },
                             ...agentConversation.slice(-12) // Keep last 12 messages for context
                         ],
-                        model: "llama-3.1-8b-instant",
+                        model: "gpt-oss-20b",
                         temperature: 0.72,
                         max_tokens: 700
                     })

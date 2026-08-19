@@ -37,7 +37,7 @@ app.post('/api/ai/chat', aiLimiter, async (req, res) => {
         const { messages, model, temperature, max_tokens } = req.body;
         const response = await groq.chat.completions.create({
             messages: messages,
-            model: model || "llama-3.1-8b-instant",
+            model: model || "gpt-oss-20b",
             temperature: temperature || 0.7,
             max_tokens: max_tokens || 150
         });
@@ -86,7 +86,7 @@ app.post('/api/ai/quiz', aiLimiter, async (req, res) => {
         const { prompt, max_tokens } = req.body;
         const response = await groq.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
-            model: "llama-3.3-70b-versatile",
+            model: "gpt-oss-120b",
             temperature: 0.3, // Lower temperature for more consistent JSON
             max_tokens: max_tokens || 2500
         });
