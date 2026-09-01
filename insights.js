@@ -218,7 +218,7 @@ async function generateTopicGuide(encodedTopic) {
                         content: `I am struggling with the topic: "${topicName}". Give me a specific study guide, book recommendations, and YouTube channels to master this.` 
                     }
                 ],
-                model: "gpt-oss-20b",
+                model: "openai/gpt-oss-20b",
                 temperature: 0.7,
                 max_tokens: 400
             })
